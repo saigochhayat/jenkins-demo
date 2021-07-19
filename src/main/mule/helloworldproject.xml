@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="626485bf-4697-4d2e-b35d-534414da8193" >
+		<http:request-connection protocol="HTTPS" host="reqres.in"/>
+	</http:request-config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="91d51cb1-5c7f-4e3e-8e67-b95c910ff77f" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="c0b87134-75fa-48ff-ac3d-a9bb39dd3e3e" file="config.yaml" />
+	<flow name="helloworldprojectFlow" doc:id="93f8fb67-ef0f-4e84-bd97-b3685e3fc7e1" >
+		<http:listener doc:name="Listener" doc:id="d0af569f-e7dd-4964-baf2-aaf08cf4cf93" config-ref="HTTP_Listener_config" path="/user/{userid}" allowedMethods="GET"/>
+		<http:request method="GET" doc:name="Request" doc:id="bf76f4da-4f57-43e0-8bcf-1e933babac5b" config-ref="HTTP_Request_configuration" path="/api/users/{id}">
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	"id" : attributes.uriParams.userid
+}]]]></http:uri-params>
+		</http:request>
+	</flow>
+</mule>
